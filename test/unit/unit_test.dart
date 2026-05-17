@@ -81,24 +81,26 @@ void main() {
       expect(updated.priority, original.priority);
     });
 
-    test('returns a new task with all fields replaced when all are provided',
-        () {
-      final newDue = DateTime(2026, 12, 31);
-      final updated = original.copyWith(
-        id: 'new',
-        title: 'New Title',
-        description: 'new desc',
-        priority: Priority.high,
-        dueDate: newDue,
-        isCompleted: true,
-      );
+    test(
+      'returns a new task with all fields replaced when all are provided',
+      () {
+        final newDue = DateTime(2026, 12, 31);
+        final updated = original.copyWith(
+          id: 'new',
+          title: 'New Title',
+          description: 'new desc',
+          priority: Priority.high,
+          dueDate: newDue,
+          isCompleted: true,
+        );
 
-      expect(updated.id, 'new');
-      expect(updated.title, 'New Title');
-      expect(updated.priority, Priority.high);
-      expect(updated.dueDate, newDue);
-      expect(updated.isCompleted, isTrue);
-    });
+        expect(updated.id, 'new');
+        expect(updated.title, 'New Title');
+        expect(updated.priority, Priority.high);
+        expect(updated.dueDate, newDue);
+        expect(updated.isCompleted, isTrue);
+      },
+    );
 
     test('leaves the original task unchanged after copyWith is called', () {
       original.copyWith(title: 'Should not affect original');
@@ -110,40 +112,47 @@ void main() {
   // ── Task Model — isOverdue getter ────────────────────────────────────────────
 
   group('Task Model — isOverdue getter', () {
-    test('returns true when task is incomplete and due date is in the past', () {
-      final task = Task(
-        id: '1',
-        title: 'T',
-        dueDate: DateTime(2000, 1, 1),
-        isCompleted: false,
-      );
+    test(
+      'returns true when task is incomplete and due date is in the past',
+      () {
+        final task = Task(
+          id: '1',
+          title: 'T',
+          dueDate: DateTime(2000, 1, 1),
+          isCompleted: false,
+        );
 
-      expect(task.isOverdue, isTrue);
-    });
+        expect(task.isOverdue, isTrue);
+      },
+    );
 
-    test('returns false when task is incomplete and due date is in the future',
-        () {
-      final task = Task(
-        id: '1',
-        title: 'T',
-        dueDate: DateTime(2099, 1, 1),
-        isCompleted: false,
-      );
+    test(
+      'returns false when task is incomplete and due date is in the future',
+      () {
+        final task = Task(
+          id: '1',
+          title: 'T',
+          dueDate: DateTime(2099, 1, 1),
+          isCompleted: false,
+        );
 
-      expect(task.isOverdue, isFalse);
-    });
+        expect(task.isOverdue, isFalse);
+      },
+    );
 
-    test('returns false when task is completed even if due date is in the past',
-        () {
-      final task = Task(
-        id: '1',
-        title: 'T',
-        dueDate: DateTime(2000, 1, 1),
-        isCompleted: true,
-      );
+    test(
+      'returns false when task is completed even if due date is in the past',
+      () {
+        final task = Task(
+          id: '1',
+          title: 'T',
+          dueDate: DateTime(2000, 1, 1),
+          isCompleted: true,
+        );
 
-      expect(task.isOverdue, isFalse);
-    });
+        expect(task.isOverdue, isFalse);
+      },
+    );
   });
 
   // ── Task Model — toJson() / fromJson() ───────────────────────────────────────
@@ -162,17 +171,19 @@ void main() {
       );
     });
 
-    test('restores all fields correctly after a toJson and fromJson round-trip',
-        () {
-      final restored = Task.fromJson(task.toJson());
+    test(
+      'restores all fields correctly after a toJson and fromJson round-trip',
+      () {
+        final restored = Task.fromJson(task.toJson());
 
-      expect(restored.id, task.id);
-      expect(restored.title, task.title);
-      expect(restored.description, task.description);
-      expect(restored.priority, task.priority);
-      expect(restored.dueDate, task.dueDate);
-      expect(restored.isCompleted, task.isCompleted);
-    });
+        expect(restored.id, task.id);
+        expect(restored.title, task.title);
+        expect(restored.description, task.description);
+        expect(restored.priority, task.priority);
+        expect(restored.dueDate, task.dueDate);
+        expect(restored.isCompleted, task.isCompleted);
+      },
+    );
 
     test('encodes priority as an integer index in the JSON map', () {
       final json = task.toJson();
@@ -195,7 +206,11 @@ void main() {
 
     setUp(() {
       service = TaskService();
-      sampleTask = Task(id: '1', title: 'My Task', dueDate: DateTime(2026, 4, 1));
+      sampleTask = Task(
+        id: '1',
+        title: 'My Task',
+        dueDate: DateTime(2026, 4, 1),
+      );
     });
 
     test('adds the task so it appears in allTasks after a successful add', () {
@@ -205,15 +220,22 @@ void main() {
     });
 
     test('throws ArgumentError when the task title is empty or whitespace', () {
-      final blankTask =
-          Task(id: '2', title: '   ', dueDate: DateTime(2026, 4, 1));
+      final blankTask = Task(
+        id: '2',
+        title: '   ',
+        dueDate: DateTime(2026, 4, 1),
+      );
 
       expect(() => service.addTask(blankTask), throwsA(isA<ArgumentError>()));
     });
 
     test('allows two tasks with the same id to coexist in the list', () {
-      service.addTask(Task(id: 'dup', title: 'First', dueDate: DateTime(2026, 4, 1)));
-      service.addTask(Task(id: 'dup', title: 'Second', dueDate: DateTime(2026, 4, 1)));
+      service.addTask(
+        Task(id: 'dup', title: 'First', dueDate: DateTime(2026, 4, 1)),
+      );
+      service.addTask(
+        Task(id: 'dup', title: 'Second', dueDate: DateTime(2026, 4, 1)),
+      );
 
       expect(service.allTasks.length, 2);
     });
@@ -227,7 +249,11 @@ void main() {
 
     setUp(() {
       service = TaskService();
-      sampleTask = Task(id: 't1', title: 'Remove me', dueDate: DateTime(2026, 4, 1));
+      sampleTask = Task(
+        id: 't1',
+        title: 'Remove me',
+        dueDate: DateTime(2026, 4, 1),
+      );
       service.addTask(sampleTask);
     });
 
@@ -284,18 +310,29 @@ void main() {
 
     setUp(() {
       service = TaskService();
-      activeTask = Task(id: 'a', title: 'Active', dueDate: DateTime(2026, 4, 1));
-      completedTask = Task(id: 'c', title: 'Done', dueDate: DateTime(2026, 4, 1));
+      activeTask = Task(
+        id: 'a',
+        title: 'Active',
+        dueDate: DateTime(2026, 4, 1),
+      );
+      completedTask = Task(
+        id: 'c',
+        title: 'Done',
+        dueDate: DateTime(2026, 4, 1),
+      );
       service.addTask(activeTask);
       service.addTask(completedTask);
       service.toggleComplete('c');
     });
 
-    test('returns only incomplete tasks when filtering by completed: false', () {
-      final result = service.getByStatus(completed: false);
+    test(
+      'returns only incomplete tasks when filtering by completed: false',
+      () {
+        final result = service.getByStatus(completed: false);
 
-      expect(result.every((t) => !t.isCompleted), isTrue);
-    });
+        expect(result.every((t) => !t.isCompleted), isTrue);
+      },
+    );
 
     test('returns only completed tasks when filtering by completed: true', () {
       final result = service.getByStatus(completed: true);
@@ -311,9 +348,30 @@ void main() {
 
     setUp(() {
       service = TaskService();
-      service.addTask(Task(id: 'low', title: 'Low', priority: Priority.low, dueDate: DateTime(2026, 4, 1)));
-      service.addTask(Task(id: 'high', title: 'High', priority: Priority.high, dueDate: DateTime(2026, 4, 1)));
-      service.addTask(Task(id: 'med', title: 'Med', priority: Priority.medium, dueDate: DateTime(2026, 4, 1)));
+      service.addTask(
+        Task(
+          id: 'low',
+          title: 'Low',
+          priority: Priority.low,
+          dueDate: DateTime(2026, 4, 1),
+        ),
+      );
+      service.addTask(
+        Task(
+          id: 'high',
+          title: 'High',
+          priority: Priority.high,
+          dueDate: DateTime(2026, 4, 1),
+        ),
+      );
+      service.addTask(
+        Task(
+          id: 'med',
+          title: 'Med',
+          priority: Priority.medium,
+          dueDate: DateTime(2026, 4, 1),
+        ),
+      );
     });
 
     test('places the highest priority task first in the sorted result', () {
@@ -337,16 +395,22 @@ void main() {
 
     setUp(() {
       service = TaskService();
-      service.addTask(Task(id: 'late', title: 'Late', dueDate: DateTime(2026, 12, 1)));
-      service.addTask(Task(id: 'early', title: 'Early', dueDate: DateTime(2026, 1, 1)));
+      service.addTask(
+        Task(id: 'late', title: 'Late', dueDate: DateTime(2026, 12, 1)),
+      );
+      service.addTask(
+        Task(id: 'early', title: 'Early', dueDate: DateTime(2026, 1, 1)),
+      );
     });
 
-    test('places the task with the earliest due date first in the sorted result',
-        () {
-      final sorted = service.sortByDueDate();
+    test(
+      'places the task with the earliest due date first in the sorted result',
+      () {
+        final sorted = service.sortByDueDate();
 
-      expect(sorted.first.id, 'early');
-    });
+        expect(sorted.first.id, 'early');
+      },
+    );
 
     test('does not mutate the original allTasks list after sorting', () {
       final before = service.allTasks.map((t) => t.id).toList();
@@ -371,24 +435,39 @@ void main() {
       expect(stats['overdue'], 0);
     });
 
-    test('counts total and completed correctly when tasks have mixed status', () {
-      service.addTask(Task(id: '1', title: 'A', dueDate: DateTime(2026, 4, 1)));
-      service.addTask(Task(id: '2', title: 'B', dueDate: DateTime(2026, 4, 1)));
-      service.addTask(Task(id: '3', title: 'C', dueDate: DateTime(2026, 4, 1)));
-      service.toggleComplete('1');
-      service.toggleComplete('2');
+    test(
+      'counts total and completed correctly when tasks have mixed status',
+      () {
+        service.addTask(
+          Task(id: '1', title: 'A', dueDate: DateTime(2026, 4, 1)),
+        );
+        service.addTask(
+          Task(id: '2', title: 'B', dueDate: DateTime(2026, 4, 1)),
+        );
+        service.addTask(
+          Task(id: '3', title: 'C', dueDate: DateTime(2026, 4, 1)),
+        );
+        service.toggleComplete('1');
+        service.toggleComplete('2');
 
-      final stats = service.statistics;
+        final stats = service.statistics;
 
-      expect(stats['total'], 3);
-      expect(stats['completed'], 2);
-    });
+        expect(stats['total'], 3);
+        expect(stats['completed'], 2);
+      },
+    );
 
     test('counts only incomplete past-due tasks in the overdue total', () {
-      service.addTask(Task(id: 'od', title: 'Overdue', dueDate: DateTime(2000, 1, 1)));
-      service.addTask(Task(id: 'cp', title: 'Done past', dueDate: DateTime(2000, 1, 1)));
+      service.addTask(
+        Task(id: 'od', title: 'Overdue', dueDate: DateTime(2000, 1, 1)),
+      );
+      service.addTask(
+        Task(id: 'cp', title: 'Done past', dueDate: DateTime(2000, 1, 1)),
+      );
       service.toggleComplete('cp');
-      service.addTask(Task(id: 'fu', title: 'Future', dueDate: DateTime(2099, 1, 1)));
+      service.addTask(
+        Task(id: 'fu', title: 'Future', dueDate: DateTime(2099, 1, 1)),
+      );
 
       final stats = service.statistics;
 
@@ -406,46 +485,65 @@ void main() {
     setUp(() {
       mockService = MockTaskService();
       provider = TaskProvider(service: mockService);
-      sampleTask = Task(id: '1', title: 'Task 1', dueDate: DateTime(2026, 3, 20));
+      sampleTask = Task(
+        id: '1',
+        title: 'Task 1',
+        dueDate: DateTime(2026, 3, 20),
+      );
     });
 
     test('returns tasks sorted by earliest due date first by default', () {
-      final early = sampleTask.copyWith(id: 'early', dueDate: DateTime(2026, 3, 18));
-      final late_ = sampleTask.copyWith(id: 'late', dueDate: DateTime(2026, 3, 25));
+      final early = sampleTask.copyWith(
+        id: 'early',
+        dueDate: DateTime(2026, 3, 18),
+      );
+      final late_ = sampleTask.copyWith(
+        id: 'late',
+        dueDate: DateTime(2026, 3, 25),
+      );
       when(mockService.allTasks).thenReturn([late_, early]);
 
       expect(provider.tasks.map((t) => t.id), ['early', 'late']);
     });
 
-    test('returns tasks sorted by highest priority first when sort mode is priority', () {
-      final low = sampleTask.copyWith(id: 'low', priority: Priority.low);
-      final high = sampleTask.copyWith(id: 'high', priority: Priority.high);
-      when(mockService.allTasks).thenReturn([low, high]);
+    test(
+      'returns tasks sorted by highest priority first when sort mode is priority',
+      () {
+        final low = sampleTask.copyWith(id: 'low', priority: Priority.low);
+        final high = sampleTask.copyWith(id: 'high', priority: Priority.high);
+        when(mockService.allTasks).thenReturn([low, high]);
 
-      provider.setSortMode(SortMode.priority);
+        provider.setSortMode(SortMode.priority);
 
-      expect(provider.tasks.map((t) => t.id), ['high', 'low']);
-    });
+        expect(provider.tasks.map((t) => t.id), ['high', 'low']);
+      },
+    );
 
-    test('calls getByStatus(completed: false) when filter is set to active', () {
-      final active = sampleTask.copyWith(id: 'active', isCompleted: false);
-      when(mockService.getByStatus(completed: false)).thenReturn([active]);
+    test(
+      'calls getByStatus(completed: false) when filter is set to active',
+      () {
+        final active = sampleTask.copyWith(id: 'active', isCompleted: false);
+        when(mockService.getByStatus(completed: false)).thenReturn([active]);
 
-      provider.setFilter(FilterStatus.active);
+        provider.setFilter(FilterStatus.active);
 
-      expect(provider.tasks.map((t) => t.id), ['active']);
-      verify(mockService.getByStatus(completed: false)).called(1);
-    });
+        expect(provider.tasks.map((t) => t.id), ['active']);
+        verify(mockService.getByStatus(completed: false)).called(1);
+      },
+    );
 
-    test('calls getByStatus(completed: true) when filter is set to completed', () {
-      final done = sampleTask.copyWith(id: 'done', isCompleted: true);
-      when(mockService.getByStatus(completed: true)).thenReturn([done]);
+    test(
+      'calls getByStatus(completed: true) when filter is set to completed',
+      () {
+        final done = sampleTask.copyWith(id: 'done', isCompleted: true);
+        when(mockService.getByStatus(completed: true)).thenReturn([done]);
 
-      provider.setFilter(FilterStatus.completed);
+        provider.setFilter(FilterStatus.completed);
 
-      expect(provider.tasks.map((t) => t.id), ['done']);
-      verify(mockService.getByStatus(completed: true)).called(1);
-    });
+        expect(provider.tasks.map((t) => t.id), ['done']);
+        verify(mockService.getByStatus(completed: true)).called(1);
+      },
+    );
   });
 
   // ── TaskProvider — mutations (mocked service) ────────────────────────────────
@@ -461,34 +559,43 @@ void main() {
       sampleTask = Task(id: '1', title: 'T', dueDate: DateTime(2026, 4, 1));
     });
 
-    test('delegates to service.addTask and notifies listeners when a task is added', () {
-      when(mockService.allTasks).thenReturn([sampleTask]);
+    test(
+      'delegates to service.addTask and notifies listeners when a task is added',
+      () {
+        when(mockService.allTasks).thenReturn([sampleTask]);
 
-      var notified = false;
-      provider.addListener(() => notified = true);
-      provider.addTask(sampleTask);
+        var notified = false;
+        provider.addListener(() => notified = true);
+        provider.addTask(sampleTask);
 
-      verify(mockService.addTask(sampleTask)).called(1);
-      expect(notified, isTrue);
-    });
+        verify(mockService.addTask(sampleTask)).called(1);
+        expect(notified, isTrue);
+      },
+    );
 
-    test('delegates to service.deleteTask and notifies listeners when a task is deleted', () {
-      var notified = false;
-      provider.addListener(() => notified = true);
-      provider.deleteTask('abc');
+    test(
+      'delegates to service.deleteTask and notifies listeners when a task is deleted',
+      () {
+        var notified = false;
+        provider.addListener(() => notified = true);
+        provider.deleteTask('abc');
 
-      verify(mockService.deleteTask('abc')).called(1);
-      expect(notified, isTrue);
-    });
+        verify(mockService.deleteTask('abc')).called(1);
+        expect(notified, isTrue);
+      },
+    );
 
-    test('delegates to service.toggleComplete and notifies listeners when a task is toggled', () {
-      var notified = false;
-      provider.addListener(() => notified = true);
-      provider.toggleComplete('abc');
+    test(
+      'delegates to service.toggleComplete and notifies listeners when a task is toggled',
+      () {
+        var notified = false;
+        provider.addListener(() => notified = true);
+        provider.toggleComplete('abc');
 
-      verify(mockService.toggleComplete('abc')).called(1);
-      expect(notified, isTrue);
-    });
+        verify(mockService.toggleComplete('abc')).called(1);
+        expect(notified, isTrue);
+      },
+    );
 
     test('returns the statistics map provided by the service', () {
       final stats = {'total': 3, 'completed': 2, 'overdue': 1};
